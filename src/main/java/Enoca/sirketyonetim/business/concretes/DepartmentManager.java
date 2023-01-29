@@ -3,8 +3,8 @@ package Enoca.sirketyonetim.business.concretes;
 import Enoca.sirketyonetim.business.abstracts.DepartmentService;
 import Enoca.sirketyonetim.dataAccess.DepartmentRepository;
 import Enoca.sirketyonetim.entity.Department;
-import Enoca.sirketyonetim.requests.CreateDepartmentRequest;
-import Enoca.sirketyonetim.requests.UpdateOneDepartment;
+import Enoca.sirketyonetim.requests.departmentRequest.CreateDepartmentRequest;
+import Enoca.sirketyonetim.requests.departmentRequest.UpdateOneDepartment;
 import Enoca.sirketyonetim.response.DepartmentResponse;
 import Enoca.sirketyonetim.utilities.result.*;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +31,8 @@ public class DepartmentManager implements DepartmentService {
         Department department = new Department();
         department.setDepartmentName(departmentRequest.getDepartmentName());
         Department result = departmentRepository.save(department);
-        DepartmentResponse response = new DepartmentResponse(result.getId(), result.getDepartmentName());
-        return new SuccessDataResult<>(response, "Kayıt Başarılı.");
+
+        return new SuccessDataResult<>(new DepartmentResponse(result), "Kayıt Başarılı.");
     }
 
     @Override
@@ -67,14 +67,13 @@ public class DepartmentManager implements DepartmentService {
     }
 
     @Override
-    public DataResult<Department> getById(Long id) {
+    public DataResult<DepartmentResponse> getById(Long id) {
         Department department = departmentRepository.findById(id).orElse(null);
-
-
-        if (department== null){
-            return new ErrorDataResult<>( "Aranan Kayıt Bulunamadı.");
+        DepartmentResponse response=new DepartmentResponse(department);
+        if (department == null) {
+            return new ErrorDataResult<>("Aranan Kayıt Bulunamadı.");
         }
 
-        return new SuccessDataResult<>(department, "Aranan Kayıt Getirildi.");
+        return new SuccessDataResult<>(response, "Aranan Kayıt Getirildi.");
     }
 }

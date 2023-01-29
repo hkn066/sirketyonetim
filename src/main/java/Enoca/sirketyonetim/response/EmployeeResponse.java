@@ -9,6 +9,8 @@ public class EmployeeResponse {
     String name;
     String surName;
     String degree;
+    String address;
+    Integer phone;
     Long departmentId;
 
     public EmployeeResponse(Employee entity) {
@@ -16,6 +18,8 @@ public class EmployeeResponse {
         this.name = entity.getName();
         this.surName = entity.getSurName();
         this.degree = entity.getDegree();
-        this.departmentId = getDepartmentId();
+        this.departmentId =entity.getDepartment().getId();
+        this.address=entity.getAddress();
+        this.phone=entity.getPhone();
     }
 }

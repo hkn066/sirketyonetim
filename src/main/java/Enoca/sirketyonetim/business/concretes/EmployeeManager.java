@@ -5,7 +5,9 @@ import Enoca.sirketyonetim.business.abstracts.EmployeeService;
 import Enoca.sirketyonetim.dataAccess.EmployeeRepository;
 import Enoca.sirketyonetim.entity.Department;
 import Enoca.sirketyonetim.entity.Employee;
-import Enoca.sirketyonetim.requests.CreateEmployeeRequest;
+import Enoca.sirketyonetim.requests.employeeRequest.CreateEmployeeRequest;
+import Enoca.sirketyonetim.requests.employeeRequest.UpdateOneEmployeeRequest;
+import Enoca.sirketyonetim.response.DepartmentResponse;
 import Enoca.sirketyonetim.response.EmployeeResponse;
 import Enoca.sirketyonetim.utilities.result.*;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +33,10 @@ public class EmployeeManager implements EmployeeService {
                 employeeRequest.getSurname().isEmpty() || employeeRequest.getAddress().isEmpty() || employeeRequest.getPhone() == null) {
             return new ErrorDataResult<>("Boş Alanları Doldurunuz");
         }
-
-        Department department = departmentService.getById(employeeRequest.getDepartmentId()).getData();
+        DepartmentResponse departmentResponse = departmentService.getById(employeeRequest.getDepartmentId()).getData();
+        Department department=new Department();
+        department.setDepartmentName(departmentResponse.getDepartmentName());
+        department.setId(departmentResponse.getId());
         Employee employee = Employee.builder()
                 .name(employeeRequest.getName())
                 .surName(employeeRequest.getSurname())
@@ -41,8 +45,8 @@ public class EmployeeManager implements EmployeeService {
                 .phone(employeeRequest.getPhone())
                 .department(department)
                 .build();
-        employeeRepository.save(employee);
-        EmployeeResponse employeeResponse= new EmployeeResponse(employee);
+        Employee employee1 = employeeRepository.save(employee);
+        EmployeeResponse employeeResponse = new EmployeeResponse(employee1);
 
         return new SuccessDataResult<>(employeeResponse, "Kayıt Başarılı.");
 
@@ -59,20 +63,26 @@ public class EmployeeManager implements EmployeeService {
     }
 
     @Override
-    public DataResult<Employee> update(Long id, CreateEmployeeRequest employeeRequest) {
-        Department department = departmentService.getById(employeeRequest.getDepartmentId()).getData();
+    public DataResult<Employee> update(Long id, UpdateOneEmployeeRequest updateRequest) {
+        if (updateRequest.getDepartmentId() == null || updateRequest.getName().isEmpty() ||
+                updateRequest.getSurname().isEmpty() || updateRequest.getAddress().isEmpty() ||
+                updateRequest.getPhone() == null || updateRequest.getDegree().isEmpty()) {
+            return new ErrorDataResult<>("Boş Alanları Doldurunuz");
+        }
+        DepartmentResponse departmentResponse = departmentService.getById(updateRequest.getDepartmentId()).getData();
+        Department department=new Department();
+        department.setDepartmentName(departmentResponse.getDepartmentName());
+        department.setId(departmentResponse.getId());
+
         Employee employee = employeeRepository.findById(id).get();
-        employee.setName(employeeRequest.getName());
-        employee.setSurName(employeeRequest.getSurname());
-        employee.setDegree(employeeRequest.getDegree());
-        employee.setPhone(employeeRequest.getPhone());
-        employee.setAddress(employeeRequest.getAddress());
+        employee.setName(updateRequest.getName());
+        employee.setSurName(updateRequest.getSurname());
+        employee.setDegree(updateRequest.getDegree());
+        employee.setPhone(updateRequest.getPhone());
+        employee.setAddress(updateRequest.getAddress());
         employee.setDepartment(department);
 
-
         return new SuccessDataResult<>(employeeRepository.save(employee), "Güncelleme Başarılı.");
-
-
     }
 
     @Override
@@ -81,11 +91,13 @@ public class EmployeeManager implements EmployeeService {
     }
 
     @Override
-    public DataResult<Employee> getById(Long id) {
+    public DataResult<EmployeeResponse> getById(Long id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
-        if (employee != null) {
-            return new SuccessDataResult<>(employee, "Aranan Kayıt listelendi.");
+
+        if (employee == null) {
+            return new ErrorDataResult<>("Böyle Bir Kayıt Bulunamadı.");
         }
-        return new ErrorDataResult<>("Böyle Bir Kayıt Bulunamadı.");
+
+        return new SuccessDataResult<>(new EmployeeResponse(employee), "Aranan Kayıt listelendi.");
     }
 }

@@ -2,8 +2,8 @@ package Enoca.sirketyonetim.controller;
 
 import Enoca.sirketyonetim.business.abstracts.DepartmentService;
 import Enoca.sirketyonetim.entity.Department;
-import Enoca.sirketyonetim.requests.CreateDepartmentRequest;
-import Enoca.sirketyonetim.requests.UpdateOneDepartment;
+import Enoca.sirketyonetim.requests.departmentRequest.CreateDepartmentRequest;
+import Enoca.sirketyonetim.requests.departmentRequest.UpdateOneDepartment;
 import Enoca.sirketyonetim.response.DepartmentResponse;
 import Enoca.sirketyonetim.utilities.result.DataResult;
 import Enoca.sirketyonetim.utilities.result.Result;
@@ -59,14 +59,14 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DepartmentResponse> getByOneDepartment(@PathVariable Long id) {
-        DataResult<Department> department = departmentService.getById(id);
+    public ResponseEntity<DataResult<DepartmentResponse>> getByOneDepartment(@PathVariable Long id) {
+        DataResult<DepartmentResponse> department = departmentService.getById(id);
 
         if (!department.isSuccess()) {
 
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(department,HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(new DepartmentResponse(department.getData().getId(), department.getData().getDepartmentName()), HttpStatus.FOUND);
+        return new ResponseEntity<>(department, HttpStatus.FOUND);
     }
 
 
