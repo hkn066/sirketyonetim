@@ -6,6 +6,7 @@ import Enoca.sirketyonetim.dataAccess.EmployeeRepository;
 import Enoca.sirketyonetim.entity.Department;
 import Enoca.sirketyonetim.entity.Employee;
 import Enoca.sirketyonetim.requests.CreateEmployeeRequest;
+import Enoca.sirketyonetim.response.EmployeeResponse;
 import Enoca.sirketyonetim.utilities.result.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,12 @@ public class EmployeeManager implements EmployeeService {
     }
 
     @Override
-    public DataResult<Employee> add(CreateEmployeeRequest employeeRequest) {
+    public DataResult<EmployeeResponse> add(CreateEmployeeRequest employeeRequest) {
+        if (employeeRequest.getDepartmentId() == null || employeeRequest.getName().isEmpty() ||
+                employeeRequest.getSurname().isEmpty() || employeeRequest.getAddress().isEmpty() || employeeRequest.getPhone() == null) {
+            return new ErrorDataResult<>("Boş Alanları Doldurunuz");
+        }
+
         Department department = departmentService.getById(employeeRequest.getDepartmentId()).getData();
         Employee employee = Employee.builder()
                 .name(employeeRequest.getName())
@@ -35,20 +41,21 @@ public class EmployeeManager implements EmployeeService {
                 .phone(employeeRequest.getPhone())
                 .department(department)
                 .build();
+        employeeRepository.save(employee);
+        EmployeeResponse employeeResponse= new EmployeeResponse(employee);
 
-
-        return new SuccessDataResult<>(employeeRepository.save(employee),"Kayıt Başarılı.");
+        return new SuccessDataResult<>(employeeResponse, "Kayıt Başarılı.");
 
     }
 
     @Override
     public Result delete(Long id) {
-        Employee employee=employeeRepository.findById(id).orElse(null);
-        if (employee!=null){
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee != null) {
             employeeRepository.delete(employee);
-            return new SuccessResult("Kayıt Silindi.") ;
+            return new SuccessResult("Kayıt Silindi.");
         }
-       return new ErrorResult("Böyle Bir Kayıt Bulunamadı.");
+        return new ErrorResult("Böyle Bir Kayıt Bulunamadı.");
     }
 
     @Override
@@ -63,21 +70,21 @@ public class EmployeeManager implements EmployeeService {
         employee.setDepartment(department);
 
 
-        return new SuccessDataResult<>(employeeRepository.save(employee),"Güncelleme Başarılı.") ;
+        return new SuccessDataResult<>(employeeRepository.save(employee), "Güncelleme Başarılı.");
 
 
     }
 
     @Override
     public DataResult<List<Employee>> getAll() {
-        return new SuccessDataResult<>(employeeRepository.findAll(),"Kayıtlar Listelindi..");
+        return new SuccessDataResult<>(employeeRepository.findAll(), "Kayıtlar Listelindi..");
     }
 
     @Override
     public DataResult<Employee> getById(Long id) {
-        Employee employee=employeeRepository.findById(id).orElse(null);
-        if (employee!=null){
-            return new SuccessDataResult<>(employee,"Aranan Kayıt listelendi.");
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee != null) {
+            return new SuccessDataResult<>(employee, "Aranan Kayıt listelendi.");
         }
         return new ErrorDataResult<>("Böyle Bir Kayıt Bulunamadı.");
     }

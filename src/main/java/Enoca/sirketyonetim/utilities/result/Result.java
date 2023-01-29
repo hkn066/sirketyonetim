@@ -5,6 +5,8 @@ public class Result {
     private boolean success;
     private String message;
 
+    public Result() {
+    }
 
     public Result(boolean success)
     {

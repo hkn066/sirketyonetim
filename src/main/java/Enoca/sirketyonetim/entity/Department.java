@@ -16,8 +16,8 @@ import java.util.List;
 @Table(name = "department")
 @NoArgsConstructor
 @AllArgsConstructor
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "employees"})
-@EqualsAndHashCode(callSuper=false)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "employees"})
+@EqualsAndHashCode(callSuper = false)
 public class Department implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,6 @@ public class Department implements Serializable {
     @Column(name = "department")
     private String departmentName;
 
-//    @OneToMany(mappedBy = "department")
-//    private List<Employee> employees;
+    @OneToMany(mappedBy = "department")
+    private List<Employee> employees;
 }

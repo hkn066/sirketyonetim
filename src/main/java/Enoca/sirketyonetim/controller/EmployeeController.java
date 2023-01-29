@@ -3,6 +3,7 @@ package Enoca.sirketyonetim.controller;
 import Enoca.sirketyonetim.business.abstracts.EmployeeService;
 import Enoca.sirketyonetim.entity.Employee;
 import Enoca.sirketyonetim.requests.CreateEmployeeRequest;
+import Enoca.sirketyonetim.response.EmployeeResponse;
 import Enoca.sirketyonetim.utilities.result.DataResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,13 @@ public class EmployeeController {
     }
 
     @PostMapping()
-    public ResponseEntity<DataResult<Employee>>createEmployee(@RequestBody CreateEmployeeRequest employeeRequest){
-        return ResponseEntity.ok(employeeService.add(employeeRequest));
+    public ResponseEntity<DataResult<EmployeeResponse>>createEmployee(@RequestBody CreateEmployeeRequest employeeRequest){
+        DataResult<EmployeeResponse> result=employeeService.add(employeeRequest);
+        if(result.isSuccess()){
+            return  new ResponseEntity<>(result,HttpStatus.CREATED);
+        }
+
+        return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/{id}")
