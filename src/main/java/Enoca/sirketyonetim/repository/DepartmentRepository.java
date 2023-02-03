@@ -1,4 +1,4 @@
-package Enoca.sirketyonetim.dataAccess;
+package Enoca.sirketyonetim.repository;
 
 import Enoca.sirketyonetim.entity.Department;
 import org.springframework.data.jpa.repository.JpaRepository;

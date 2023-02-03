@@ -1,4 +1,4 @@
-package Enoca.sirketyonetim.requests.employeeRequest;
+package Enoca.sirketyonetim.entity.requests.employeeRequest;
 
 import lombok.Data;
 

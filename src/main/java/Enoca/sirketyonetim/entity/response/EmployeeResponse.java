@@ -1,4 +1,4 @@
-package Enoca.sirketyonetim.response;
+package Enoca.sirketyonetim.entity.response;
 
 import Enoca.sirketyonetim.entity.Employee;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class EmployeeResponse {
     public EmployeeResponse(Employee entity) {
         this.id = entity.getId();
         this.name = entity.getName();
-        this.surName = entity.getSurName();
+        this.surName = entity.getSurname();
         this.degree = entity.getDegree();
         this.departmentId =entity.getDepartment().getId();
         this.address=entity.getAddress();

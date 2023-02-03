@@ -24,7 +24,7 @@ public class Employee {
     private String name;
 
     @Column(name = "surname")
-    private String surName;
+    private String surname;
 
     @Column(name = "degree")
     private String degree;
@@ -37,7 +37,6 @@ public class Employee {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
     private Department department;
 
 }

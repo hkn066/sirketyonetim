@@ -1,4 +1,4 @@
-package Enoca.sirketyonetim.response;
+package Enoca.sirketyonetim.entity.response;
 
 import Enoca.sirketyonetim.entity.Department;
 import lombok.AllArgsConstructor;

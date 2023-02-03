@@ -1,19 +1,19 @@
 package Enoca.sirketyonetim.controller;
 
-import Enoca.sirketyonetim.business.abstracts.DepartmentService;
-import Enoca.sirketyonetim.entity.Department;
-import Enoca.sirketyonetim.requests.departmentRequest.CreateDepartmentRequest;
-import Enoca.sirketyonetim.requests.departmentRequest.UpdateOneDepartment;
-import Enoca.sirketyonetim.response.DepartmentResponse;
+import Enoca.sirketyonetim.entity.DTO.DepartmentDTO;
+import Enoca.sirketyonetim.services.abstracts.DepartmentService;
 import Enoca.sirketyonetim.utilities.result.DataResult;
 import Enoca.sirketyonetim.utilities.result.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+import java.util.List;
+
+
+
 @RequestMapping("/department")
-@CrossOrigin
+@RestController
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -22,26 +22,24 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-
     @GetMapping()
-    public ResponseEntity<?> getAllDepartment() {
-        return ResponseEntity.ok(departmentService.getAll());
+    public ResponseEntity<DataResult<List<DepartmentDTO>>> getAllDepartment() {
+        DataResult<List<DepartmentDTO>> dtoList = departmentService.getAll();
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<DataResult<DepartmentResponse>> createOneDepartment(@RequestBody CreateDepartmentRequest departmentRequest) {
-        DataResult<DepartmentResponse> department = departmentService.add(departmentRequest);
-
+    public ResponseEntity<DataResult<DepartmentDTO>> createOneDepartment(@RequestBody DepartmentDTO departmentDTO) {
+        DataResult<DepartmentDTO> department = departmentService.add(departmentDTO);
         if (department.isSuccess()) {
-
             return new ResponseEntity<>(department, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(department, HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateOneDepartment(@PathVariable Long id, @RequestBody UpdateOneDepartment updateOneDepartment) {
-        Result department = departmentService.update(id, updateOneDepartment);
+    public ResponseEntity<DataResult<DepartmentDTO>> updateOneDepartment(@PathVariable Long id, @RequestBody DepartmentDTO updateOneDepartmentDto) {
+        DataResult<DepartmentDTO> department = departmentService.update(id, updateOneDepartmentDto);
         if (department.isSuccess()) {
             return new ResponseEntity<>(department, HttpStatus.OK);
         }
@@ -59,12 +57,10 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DataResult<DepartmentResponse>> getByOneDepartment(@PathVariable Long id) {
-        DataResult<DepartmentResponse> department = departmentService.getById(id);
-
+    public ResponseEntity<DataResult<DepartmentDTO>> getByOneDepartment(@PathVariable Long id) {
+        DataResult<DepartmentDTO> department = departmentService.getById(id);
         if (!department.isSuccess()) {
-
-            return new ResponseEntity<>(department,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(department, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(department, HttpStatus.FOUND);
     }

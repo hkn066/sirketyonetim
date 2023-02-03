@@ -1,23 +1,20 @@
-package Enoca.sirketyonetim.requests.employeeRequest;
+package Enoca.sirketyonetim.entity.DTO;
 
+import Enoca.sirketyonetim.entity.Department;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CreateEmployeeRequest implements Serializable {
+public class EmployeeDTO {
+    Long id;
+
     String name;
     String surname;
     String address;
     String degree;
     Integer phone;
-    Long departmentId;
-
+    Department department;
 }
